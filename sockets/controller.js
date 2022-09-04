@@ -1,19 +1,26 @@
-const {v4:uuidv4}=require("uuid")
+const socketController = (socket) => {
+  let userConnections = [];
 
-const socketController=(socket) =>{
-  console.log("cliente conectado",socket.id)
-  socket.on('disconnect',()=>{
-    console.log("cliente desconectado", socket.id);
-  })
-  socket.on('send-message',async(payload,callback)=>{
+  socket.on("userconnect", (payload) => {
     // leyendo los mensajes
-    socket.broadcast.emit('send-message',payload)
-    const id=uuidv4();
-    callback(id)
+    let other_users = userConnections.filter(
+      (p) => p.meeting_id == data.meetingid
+    );
+    console.log(other_users);
+    userConnections.push({
+      connectionId: socket.id,
+      user_id: payload.displayName,
+      meeting_id: payload.meetingid,
+    });
+    other_users.forEach((v) => {
+      socket.to(v.connectionId).emit("inform_others_about_me", {
+        other_user_id: data.displayName,
+        connId: socket.id,
+      });
+    });
+  });
+};
 
-  })
-}
-
-module.exports={
-  socketController
-}
+module.exports = {
+  socketController,
+};
