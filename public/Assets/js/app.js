@@ -37,7 +37,6 @@ var AppProcess = (function () {
           "<span class='material-icons' style='width:100%;'>mic</span>"
         );
         updateMediaSenders(audio, rtp_aud_senders);
-        console.log(rtp_aud_senders);
       } else {
         audio.enabled = false;
         $(this).html(
@@ -45,7 +44,6 @@ var AppProcess = (function () {
         );
         removeMediaSenders(rtp_aud_senders);
         audio.stop();
-        console.log(rtp_aud_senders);
       }
       isAudioMute = !isAudioMute;
     });
@@ -74,7 +72,6 @@ var AppProcess = (function () {
       audio = astream.getAudioTracks()[0];
       audio.enabled = false;
     } catch (e) {
-      console.log(e);
     }
   }
 
@@ -102,7 +99,6 @@ var AppProcess = (function () {
     }
   }
   function removeMediaSenders(rtp_senders) {
-    console.log("rtp_senders :", rtp_senders);
     for (var con_id in peers_connection_ids) {
       if (rtp_senders[con_id] && connection_status(peers_connection[con_id])) {
         peers_connection[con_id].removeTrack(rtp_senders[con_id]);
@@ -129,7 +125,6 @@ var AppProcess = (function () {
       video_st = newVideoState;
 
       removeVideoStream(rtp_vid_senders);
-      console.log("rtp_vid_senders", rtp_vid_senders);
       // Video_switch_off
       serverProcess(
         JSON.stringify({
@@ -178,7 +173,6 @@ var AppProcess = (function () {
         }
       }
     } catch (e) {
-      console.log(e);
       return;
     }
     video_st = newVideoState;
@@ -307,7 +301,6 @@ var AppProcess = (function () {
           message.icecandidate
         );
       } catch (e) {
-        console.log(e);
       }
     } else if (message.Video_switch_off) {
       document.querySelector("#v_" + from_connid + "").srcObject = null;
@@ -625,7 +618,6 @@ var MyApp = (function () {
     formData.append("zipfile", att_img);
     formData.append("meeting_id", meeting_id);
     formData.append("username", user_id);
-    console.log(formData);
     $.ajax({
       url: base_url + "/attachimg",
       type: "POST",
@@ -633,10 +625,8 @@ var MyApp = (function () {
       contentType: false,
       processData: false,
       success: function (response) {
-        console.log(response);
       },
       error: function () {
-        console.log("error");
       },
     });
 

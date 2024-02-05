@@ -14,9 +14,7 @@ const io = require("socket.io")(server, {
 app.use(express.static(path.join(__dirname, "")));
 var userConnections = [];
 io.on("connection", (socket) => {
-  console.log("socket id is ", socket.id);
   socket.on("userconnect", (data) => {
-    console.log("userconnent", data.displayName, data.meetingid);
     var other_users = userConnections.filter(
       (p) => p.meeting_id == data.meetingid
     );
@@ -26,7 +24,6 @@ io.on("connection", (socket) => {
       meeting_id: data.meetingid,
     });
     var userCount = userConnections.length;
-    console.log(userCount);
     other_users.forEach((v) => {
       socket.to(v.connectionId).emit("inform_others_about_me", {
         other_user_id: data.displayName,
@@ -43,7 +40,6 @@ io.on("connection", (socket) => {
     });
   });
   socket.on("sendMessage", (msg) => {
-    console.log(msg);
     var mUser = userConnections.find((p) => p.connectionId == socket.id);
     if (mUser) {
       var meetingid = mUser.meeting_id;
@@ -58,7 +54,6 @@ io.on("connection", (socket) => {
     }
   });
   socket.on("fileTransferToOther", (msg) => {
-    console.log(msg);
     var mUser = userConnections.find((p) => p.connectionId == socket.id);
     if (mUser) {
       var meetingid = mUser.meeting_id;
@@ -76,7 +71,6 @@ io.on("connection", (socket) => {
   });
 
   socket.on("disconnect", function () {
-    console.log("Disconnected");
     var disUser = userConnections.find((p) => p.connectionId == socket.id);
     if (disUser) {
       var meetingid = disUser.meeting_id;
@@ -97,7 +91,6 @@ io.on("connection", (socket) => {
   // <!-- .....................HandRaise .................-->
   socket.on("sendHandRaise", function (data) {
     var senderID = userConnections.find((p) => p.connectionId == socket.id);
-    console.log("senderID :", senderID.meeting_id);
     if (senderID.meeting_id) {
       var meetingid = senderID.meeting_id;
       // userConnections = userConnections.filter(
@@ -120,7 +113,6 @@ app.use(fileUpload());
 app.post("/attachimg", function (req, res) {
   var data = req.body;
   var imageFile = req.files.zipfile;
-  console.log(imageFile);
   var dir = "public/attachment/" + data.meeting_id + "/";
   if (!fs.existsSync(dir)) {
     fs.mkdirSync(dir);
@@ -130,9 +122,7 @@ app.post("/attachimg", function (req, res) {
     "public/attachment/" + data.meeting_id + "/" + imageFile.name,
     function (error) {
       if (error) {
-        console.log("couldn't upload the image file , error: ", error);
       } else {
-        console.log("Image file successfully uploaded");
       }
     }
   );
